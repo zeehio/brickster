@@ -851,6 +851,21 @@ preview_object <- function(host, token, rowLimit,
     } else if (!is.null(catalog) & !is.null(schema) & !is.null(model)) {
       path <- paste0(c("models", catalog, schema, model), collapse = "/")
     } else if (!is.null(catalog) & !is.null(schema) & !is.null(volume)) {
+      # Get hook function
+      volume_preview <- getOption("brickster.preview.volume", NULL)
+      # If we have a hook, use it
+      if (!is.null(volume_preview)) {
+        return(
+          volume_preview(
+            host = host,
+            token = token,
+            catalog = catalog,
+            schema = schema,
+            volume = volume
+          )
+        )
+      }
+      # No hook, let's use the default behaviour
       path <- paste0(c("volumes", catalog, schema, volume), collapse = "/")
     } else if (!is.null(catalog) & !is.null(schema) & !is.null(table)) {
       path <- paste0(c(catalog, schema, table), collapse = "/")
